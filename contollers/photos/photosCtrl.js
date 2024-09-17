@@ -9,81 +9,81 @@ const cloudinaryUploadImg = require("../../utils/cloudinary");
 //----------------------------------------------------------------
 //Upload Photo
 //----------------------------------------------------------------
-// const uploadPhotosCtrl = expressAsyncHandler(async (req, res) => {
-//   // console.log(req.body);
-
-//   req.files.map(async (file) => {
-//     console.log(file); // Check what file object contains
-
-//     // 1. Get the path to img
-//     const localPath = `public/images/photos/${file.filename}`;
-//     console.log(localPath);
-
-//     //2.Upload to cloudinary
-//     const imgUploaded = await cloudinaryUploadImg(localPath);
-
-//     const post = await Photo.create({
-//       leaderId: req.body.userId,
-//       date: req.body.date,
-//       image: file.buffer.toString("base64"),
-//     });
-//   });
-
-//   res.status(201).json({ message: "Photos uploaded successfully" });
-// });
-
-const batchSize = 5;
-
 const uploadPhotosCtrl = expressAsyncHandler(async (req, res) => {
-  try {
-    console.log("filesss", req.files);
+  // console.log(req.body);
 
-    let uploadedPhotos = [];
+  req.files.map(async (file) => {
+    console.log(file); // Check what file object contains
 
-    // Batch processing
-    for (let i = 0; i < req.files.length; i += batchSize) {
-      const batch = req.files.slice(i, i + batchSize);
-      console.log(i);
+    // 1. Get the path to img
+    const localPath = `public/images/photos/${file.filename}`;
+    console.log(localPath);
 
-      const batchUploads = await Promise.all(
-        batch.map(async (file) => {
-          // console.log(file);
+    //2.Upload to cloudinary
+    const imgUploaded = await cloudinaryUploadImg(localPath);
 
-          // 1. Get the path to img
-          const localPath = `public/images/photos/${file.filename}`;
-          console.log(localPath);
-
-          // 2. Upload to Cloudinary
-          const imgUploaded = await cloudinaryUploadImg(localPath);
-          // console.log("Uploaded image to Cloudinary:", imgUploaded);
-
-          // 3. Create a photo document in MongoDB
-          const post = await Photo.create({
-            leaderId: req.body?.leaderId,
-            date: req.body.date,
-            image: imgUploaded.url,
-          });
-
-          // Delete local file after upload
-          fs.unlinkSync(localPath);
-
-          return post;
-        })
-      );
-
-      // Combine the uploaded photos from the batch into the overall array
-      uploadedPhotos = [...uploadedPhotos, ...batchUploads];
-    }
-
-    res.status(201).json({
-      message: "Photos uploaded successfully",
-      photos: uploadedPhotos,
+    const post = await Photo.create({
+      leaderId: req.body.userId,
+      date: req.body.date,
+      image: file.buffer.toString("base64"),
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error uploading photos", error });
-  }
+  });
+
+  res.status(201).json({ message: "Photos uploaded successfully" });
 });
+
+// const batchSize = 5;
+
+// const uploadPhotosCtrl = expressAsyncHandler(async (req, res) => {
+//   try {
+//     console.log("filesss", req.files);
+
+//     let uploadedPhotos = [];
+
+//     // Batch processing
+//     for (let i = 0; i < req.files.length; i += batchSize) {
+//       const batch = req.files.slice(i, i + batchSize);
+//       console.log(i);
+
+//       const batchUploads = await Promise.all(
+//         batch.map(async (file) => {
+//           // console.log(file);
+
+//           // 1. Get the path to img
+//           const localPath = `public/images/photos/${file.filename}`;
+//           console.log(localPath);
+
+//           // 2. Upload to Cloudinary
+//           const imgUploaded = await cloudinaryUploadImg(localPath);
+//           // console.log("Uploaded image to Cloudinary:", imgUploaded);
+
+//           // 3. Create a photo document in MongoDB
+//           const post = await Photo.create({
+//             leaderId: req.body?.leaderId,
+//             date: req.body.date,
+//             image: imgUploaded.url,
+//           });
+
+//           // Delete local file after upload
+//           fs.unlinkSync(localPath);
+
+//           return post;
+//         })
+//       );
+
+//       // Combine the uploaded photos from the batch into the overall array
+//       uploadedPhotos = [...uploadedPhotos, ...batchUploads];
+//     }
+
+//     res.status(201).json({
+//       message: "Photos uploaded successfully",
+//       photos: uploadedPhotos,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error uploading photos", error });
+//   }
+// });
 
 // const uploadPhotosCtrl = expressAsyncHandler(async (req, res) => {
 //   try {
