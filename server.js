@@ -22,9 +22,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(bodyParser.json());
 // app.use(cors());
+// app.use(
+//   cors({
+//     origin: ["http://localhost:5173"],
+//     credentials: true,
+//   })
+// );
+
+// d2
+
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "photostore-ddauerethphxcraw.southindia-01.azurewebsites.net",
+      "http://localhost:5173",
+      // "http://localhost:3000",
+      // "https://lively-smoke-0fb411610.5.azurestaticapps.net",
+      "https://polite-sand-088980c10.5.azurestaticapps.net",
+    ],
     credentials: true,
   })
 );
@@ -32,6 +47,20 @@ app.use(
 //Users route
 app.use("/api/users", userRoutes);
 app.use("/api/photos", photosRoutes);
+
+// d2
+
+app.get("/", (req, res) => {
+  res.send("welcome to azure deployment shiva aade git1");
+});
+
+app.get("/welcome", (req, res) => {
+  res.send("welcome to real time deployment");
+});
+
+app.get("/new", (req, res) => {
+  res.json({ message: "welcome to real time deployment" });
+});
 
 // app.listen(PORT, () => {
 //   console.log(`Server is running succesfully`);
