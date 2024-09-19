@@ -15,6 +15,7 @@ const cloudinaryUploadImg = async (fileToUpload) => {
   try {
     const data = await cloudinary.uploader.upload(fileToUpload, {
       resource_type: "auto",
+      timeout: 120000, // Set timeout to 120 seconds
     });
     return {
       url: data?.secure_url,

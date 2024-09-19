@@ -33,14 +33,16 @@ const cloudinaryUploadImg = require("../../utils/cloudinary");
 // });
 
 const uploadPhotosCtrl = expressAsyncHandler(async (req, res) => {
+  console.log("Uploading photos...");
+
   try {
     // Check if req.body contains userId and date
-    console.log("filesss", req.files);
+    // console.log("filesss", req.files);
 
     // Process all files with Promise.all to wait for uploads to complete
     const uploadedPhotos = await Promise.all(
       req.files.map(async (file) => {
-        console.log(file); // Check what file object contains
+        // console.log(file); // Check what file object contains
 
         // 1. Get the path to img
 
@@ -49,7 +51,7 @@ const uploadPhotosCtrl = expressAsyncHandler(async (req, res) => {
 
         // 2. Upload to cloudinary
         const imgUploaded = await cloudinaryUploadImg(localPath);
-        console.log("Uploaded image to Cloudinary:", imgUploaded);
+        console.log("Uploaded image to Cloudinary:", localPath, imgUploaded);
 
         // 3. Create a photo document in MongoDB
         const post = await Photo.create({

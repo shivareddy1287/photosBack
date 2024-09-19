@@ -33,7 +33,7 @@ const profilePhotoResize = async (req, res, next) => {
   req.file.filename = `user-${Date.now()}-${req.file.originalname}`;
 
   await sharp(req.file.buffer)
-    .resize(250, 250)
+    // .resize(250, 250)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
     .toFile(path.join(`public/images/photos/${req.file.filename}`));
@@ -47,11 +47,13 @@ const postImgResize = async (req, res, next) => {
   await Promise.all(
     req.files.map(async (file) => {
       file.filename = `user-${Date.now()}-${file.originalname}`;
+      console.log("1111", file.filename);
 
       await sharp(file.buffer)
-        .resize(500, 500)
+        // .resize(500, 500)
+        .resize({ width: 1200 }) // Resize to a width of 1200px
         .toFormat("jpeg")
-        .jpeg({ quality: 90 })
+        .jpeg({ quality: 20 })
         .toFile(path.join(`public/images/photos/${file.filename}`));
     })
   );
