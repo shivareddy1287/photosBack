@@ -44,20 +44,26 @@ const profilePhotoResize = async (req, res, next) => {
 const postImgResize = async (req, res, next) => {
   if (!req.files || req.files.length === 0) return next(); // If no files, move to next middleware
 
-  await Promise.all(
-    req.files.map(async (file) => {
-      file.filename = `user-${Date.now()}-${file.originalname}`;
-      console.log("1111", file.filename);
+  try {
+    await Promise.all(
+      req.files.map(async (file) => {
+        file.filename = `user-${Date.now()}-${file.originalname}`;
+        console.log("1111", file.filename);
 
-      await sharp(file.buffer)
-        // .resize(500, 500)
-        .resize({ width: 1200 }) // Resize to a width of 1200px
-        .toFormat("jpeg")
-        .jpeg({ quality: 20 })
-        .toFile(path.join(`public/images/photos/${file.filename}`));
-    })
-  );
-  next();
+        await sharp(file.buffer)
+          .resize({ width: 1200 }) // Resize to a width of 1200px
+          .toFormat("jpeg")
+          .jpeg({ quality: 20 })
+          .toFile(path.join(`public/images/photos/${file.filename}`));
+      })
+    );
+    console.log("process to next");
+
+    next(); // Proceed to the next middleware/controller
+  } catch (error) {
+    console.error("Error resizing image:", error);
+    res.status(500).json({ message: "Image processing failed", error });
+  }
 };
 
 module.exports = { photoUpload, profilePhotoResize, postImgResize };
